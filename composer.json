@@ -3,22 +3,29 @@
   "license": "mit",
   "autoload": {
     "psr-4": {
-      "Malanciault\\WpApiClient\\": "src/"
+      "Malanciault\\Threelci\\": "src/"
     }
   },
   "authors": [
-      {
-        "name": "Marc-André Lanciault",
-        "email": "malanciault@gmail.com",
-        "homepage": "https://marcan.co"
-      }
+    {
+      "name": "Marc-André Lanciault",
+      "email": "malanciault@gmail.com",
+      "homepage": "https://marcan.co"
+    }
   ],
   "require": {
-      "php": ">= 5.6, <= 8.0",
+    "php": ">= 5.6, <= 8.0",
+    "psr/http-message": "^1.0"
   },
   "minimum-stability": "dev",
   "require-dev": {
+    "peridot-php/peridot": "^1.18",
+    "peridot-php/leo": "^1.5",
+    "squizlabs/php_codesniffer": "^2.7",
+    "guzzlehttp/guzzle": "^6.2",
+    "peridot-php/peridot-prophecy-plugin": "^1.1"
   },
   "suggest": {
+    "guzzlehttp/guzzle": "^6.2"
   }
 }
