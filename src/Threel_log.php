@@ -8,11 +8,16 @@ use Monolog\Handler\SyslogUdpHandler;
 
 class Threel_log extends \CI_Log
 {
-
     public $app_key;
+    public $host;
+    public $port;
 
     public function __construct()
     {
+        $config =& get_config();
+        $this->app_key = $config['app_key'];
+        $this->host = $config['papertrail_host'];
+        $this->port = $config['papertrail_port'];
         parent:: __construct();
     }
 
