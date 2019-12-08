@@ -4,9 +4,13 @@ namespace Malanciault\Threelci;
 
 class Threelci
 {
-    public function text() {
+    public function __construct()
+    {
+    }
+
+    public function text()
+    {
         echo 'TEST';
         exit;
     }
-
 }
