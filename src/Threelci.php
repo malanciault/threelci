@@ -2,6 +2,8 @@
 
 namespace Malanciault\Threelci;
 
+use Malanciault\Threelci\Core;
+
 class Threelci
 {
     public function __construct()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Malanciault\Threelci;
+namespace Malanciault\Threelci\Core;
 
 class Threel_controller extends \CI_Controller {
 

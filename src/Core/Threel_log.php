@@ -1,6 +1,6 @@
 <?php
 
-namespace Malanciault\Threelci;
+namespace Malanciault\Threelci\Core;
 
 use Monolog\Logger;
 use Monolog\Formatter\LineFormatter;
