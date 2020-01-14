@@ -212,8 +212,8 @@ class Threel_model extends \CI_model {
         return $this->get($id, false, true);
     }
 
-    public function row_array($where = false, $debug = false) {
-        $query = $this->get_query($where, $debug);
+    public function row_array($where = false, $lang='default', $debug = false) {
+        $query = $this->get_query($where, $debug, $lang);
         $ret = $query->row_array();
         if ($ret) {
             $this->decorate_data($ret);
@@ -221,7 +221,7 @@ class Threel_model extends \CI_model {
         return $ret;
     }
 
-    public function row_arrayD($where = false, $debug = false) {
+    public function row_arrayD($where = false, $lang='default', $debug = false) {
         return $this->row_array($where, true);
     }
 
