@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 namespace Malanciault\Threelci\Core;
 
@@ -71,7 +71,7 @@ class Threel_model extends \CI_model {
                 }
                 $this->db->join($k, $v['join'], isset($v['type']) ? $v['type'] : false);
                 if (isset($v['i18n'])) {
-                    $this->db->join($k . '_i18n', $k . '_id = ' . $k . '_i18n_' . $k . '_id AND ' . $k . "_i18n_language_id = '" . $this->session->site_lang . "'");
+                    $this->db->join($k . '_i18n', $k . '_id = ' . $k . '_i18n_' . $k . '_id AND ' . $k . "_i18n_language_id = '" . $this->session->site_lang . "'", 'left');
                 }
             }
         }
