@@ -313,9 +313,14 @@ class Threel_model extends \CI_model {
     }
 
     public function update_lang($id, $lang, $data) {
+        $this->db->where($this->table_name . '_i18n_' . $this->primary_key, $id);
+        $this->db->where($this->table_name . '_i18n_language_id', $lang);
+        $this->db->delete($this->table_name . '_i18n');
+        $this->db->reset_query();
+
         $data[$this->table_name . '_i18n_' . $this->primary_key] = $id;
         $data[$this->table_name . '_i18n_language_id'] = $lang;
-        return $this->db->replace($this->table_name . '_i18n', $data);
+        return $this->db->insert($this->table_name . '_i18n', $data);
     }
 
     public function delete($id) {
