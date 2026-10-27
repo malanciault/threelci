@@ -12,41 +12,63 @@ class Datatable
     //--------------------------------------------
     function LoadJson($SQL, $EXTRA_WHERE = '', $GROUP_BY = '')
     {
+        $db = $this->obj->db;
+
         if (!empty($EXTRA_WHERE)) {
             $SQL .= " WHERE ( $EXTRA_WHERE )";
         } else {
             $SQL .= " WHERE (1)";
         }
-        $query = $this->obj->db->query($SQL);
+        $query = $db->query($SQL);
         $total = $query->num_rows();
         //------------------------------------------------
-        if (!empty($_GET['search']['value'])) {
+        $columns = (isset($_GET['columns']) && is_array($_GET['columns'])) ? $_GET['columns'] : array();
+
+        $search = isset($_GET['search']['value']) ? (string) $_GET['search']['value'] : '';
+        if ($search !== '') {
+            $like = $db->escape_like_str($search);
             $qry = array();
-            foreach ($_GET['columns'] as $cl) {
-                if ($cl['searchable'] == 'true')
-                    $qry[] = " " . $cl['name'] . " like '%" . $_GET['search']['value'] . "%' ";
+            foreach ($columns as $cl) {
+                if (isset($cl['searchable']) && $cl['searchable'] == 'true' && $this->is_valid_column($cl))
+                    $qry[] = " " . $cl['name'] . " LIKE '%" . $like . "%' ESCAPE '!' ";
             }
-            $SQL .= "AND ( ";
-            $SQL .= implode("OR", $qry);
-            $SQL .= " ) ";
+            if (!empty($qry)) {
+                $SQL .= "AND ( ";
+                $SQL .= implode("OR", $qry);
+                $SQL .= " ) ";
+            }
         }
         //------------------------------------------------
         if (!empty($GROUP_BY)) {
             $SQL .= $GROUP_BY;
         }
         //------------------------------------------------
-        $query = $this->obj->db->query($SQL);
+        $query = $db->query($SQL);
         $filtered = $query->num_rows();
 
-        $SQL .= " ORDER BY ";
-        $SQL .= $_GET['columns'][$_GET['order'][0]['column']]['name'] . " ";
-        $SQL .= $_GET['order'][0]['dir'];
-        $SQL .= " LIMIT " . $_GET['length'] . " OFFSET " . $_GET['start'] . " ";
+        $order_index = isset($_GET['order'][0]['column']) ? (int) $_GET['order'][0]['column'] : -1;
+        if (isset($columns[$order_index]) && $this->is_valid_column($columns[$order_index])) {
+            $dir = (isset($_GET['order'][0]['dir']) && strtolower($_GET['order'][0]['dir']) === 'desc') ? 'DESC' : 'ASC';
+            $SQL .= " ORDER BY " . $columns[$order_index]['name'] . " " . $dir;
+        }
 
-        $query = $this->obj->db->query($SQL);
+        $length = isset($_GET['length']) ? (int) $_GET['length'] : 10;
+        $start = isset($_GET['start']) ? max(0, (int) $_GET['start']) : 0;
+        if ($length > 0) {
+            $SQL .= " LIMIT " . $length . " OFFSET " . $start . " ";
+        }
+
+        $query = $db->query($SQL);
         $data = $query->result_array();
 
         return array("recordsTotal" => $total, "recordsFiltered" => $filtered, 'data' => $data);
+    }
+
+    // Column names come from the client: allow plain or table-qualified identifiers only
+    private function is_valid_column($cl)
+    {
+        return isset($cl['name']) && is_string($cl['name'])
+            && preg_match('/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$/', $cl['name']);
     }
 
     public function transformThreelDataset($class, $records, $fields, $actions = array('edit'), $ml = false, $view_link = true)
